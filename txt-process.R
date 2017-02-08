@@ -1,16 +1,29 @@
 cat("\014")
 setwd("~/Desktop/gilmore-charts")
-file <- file('raw/s01e01.txt', open='r')
 
-res <- readLines(file);
-res <- res[res != ""]
-speaker <- gsub( ":.+", "", res)
-words <- gsub(".+:", "", res)
-parsed <- data.frame(speaker, words, res)
+sourceFolder <- function(folderName, verbose=FALSE, showWarnings=TRUE) {
+  files <- list.files(folderName, full.names=TRUE)
+  files <- files[grep("\\.txt$", files)]
+  print(files)
+}
 
+formFile <- function(fileName) {
+  file <- file(fileName, open='r')
+  
+  res <- readLines(file);
+  res <- res[res != ""]
 
-# colnames(parsed) <- c('original')
+  speaker <- gsub( ":.+", "", res)
+  speaker <- gsub( "\\[.*\\]", "", speaker)
+  speaker <- gsub( "(OPEN|CUT|THE END).*", "", speaker)
 
+  words <- gsub(".+:", "", res)
 
-close(file)
+  parsed <- data.frame(speaker, words)
+  
+  close(file)
+  return(parsed)
+}
 
+# sourceFolder('raw')
+pars1 <- formFile('raw/s01e13.txt')
