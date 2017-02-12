@@ -40,5 +40,10 @@ lineFrequencyPlot <- function(df) {
   barplot(people[1:10], main="people", xlab="lines", las=2)
 }
 
+writeToFile <- function(df, fileName) {
+  write.csv(df, file=fileName)
+}
+
 allDF <- createDataFrameFromFolder('raw')
+writeToFile(allDF, 'season1.csv')
 lineFrequencyPlot(allDF)
