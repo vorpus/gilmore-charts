@@ -3,7 +3,7 @@ setwd("~/Desktop/gilmore-charts")
 
 sourceFolder <- function(folderName, verbose=FALSE, showWarnings=TRUE) {
   files <- list.files(folderName, full.names=TRUE)
-  files <- files[grep("\\.txt$", files)]
+  # files <- files[grep("\\.txt$", files)]
   return(files)
 }
 
@@ -35,5 +35,10 @@ createDataFrameFromFolder <- function(folderName) {
   return(seasonAllLines)
 }
 
+lineFrequencyPlot <- function(df) {
+  people <- sort(table(allDF$speaker), decreasing=T)
+  barplot(people[1:10], main="people", xlab="lines", las=2)
+}
+
 allDF <- createDataFrameFromFolder('raw')
-# pars1 <- readFileToDF('raw/s01e21.txt')
+lineFrequencyPlot(allDF)
