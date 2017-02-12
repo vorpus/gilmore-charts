@@ -4,26 +4,36 @@ setwd("~/Desktop/gilmore-charts")
 sourceFolder <- function(folderName, verbose=FALSE, showWarnings=TRUE) {
   files <- list.files(folderName, full.names=TRUE)
   files <- files[grep("\\.txt$", files)]
-  print(files)
+  return(files)
 }
 
-formFile <- function(fileName) {
+readFileToDF <- function(fileName) {
   file <- file(fileName, open='r')
   
   res <- readLines(file);
   res <- res[res != ""]
 
   speaker <- gsub( ":.+", "", res)
-  speaker <- gsub( "\\[.*\\]", "", speaker)
+  speaker <- gsub( "(\\[|\\().*(\\]|\\))", "", speaker)
   speaker <- gsub( "(OPEN|CUT|THE END).*", "", speaker)
 
   words <- gsub(".+:", "", res)
 
   parsed <- data.frame(speaker, words)
-  
+  parsed$episode <- fileName
   close(file)
   return(parsed)
 }
 
-# sourceFolder('raw')
-pars1 <- formFile('raw/s01e13.txt')
+createDataFrameFromFolder <- function(folderName) {
+  fileNames <- sourceFolder(folderName)
+  seasonAllLines <- data.frame(speaker=character(), words=character())
+  for (i in fileNames) {
+    fileLines <- readFileToDF(i)
+    seasonAllLines <- rbind(seasonAllLines, fileLines)
+  }
+  return(seasonAllLines)
+}
+
+allDF <- createDataFrameFromFolder('raw')
+# pars1 <- readFileToDF('raw/s01e21.txt')
